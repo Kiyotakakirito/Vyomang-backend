@@ -19,7 +19,7 @@ interface FormData {
 }
 
 export default function VyomangPage() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('email');
+  const [currentScreen, setCurrentScreen] = useState<Screen>('home');
   const [formData, setFormData] = useState<FormData>({
     email: '',
     otp: '',
@@ -54,7 +54,7 @@ export default function VyomangPage() {
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
-      setCurrentScreen('home');
+      setCurrentScreen('ticket');
     }, 1500);
   };
 
@@ -249,7 +249,7 @@ export default function VyomangPage() {
                 transition={{ delay: 0.7 }}
               >
                 <GoldButton
-                  onClick={() => navigateTo('ticket')}
+                  onClick={() => navigateTo('email')}
                   loading={loading}
                   className="px-12 py-5 text-lg hover-tilt"
                   testId="button-buy-ticket"
