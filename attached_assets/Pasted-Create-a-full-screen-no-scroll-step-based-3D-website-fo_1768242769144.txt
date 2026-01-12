@@ -1,0 +1,81 @@
+Create a full-screen, no-scroll, step-based 3D website for a college fest named “VYOMANG”.
+
+STYLE & THEME:
+- Dark black background with gold accents
+- Premium, royal, futuristic feel
+- Subtle 3D animated abstract shapes and particles in the background
+- Smooth camera transitions between screens
+- App-like experience (screens instead of scrolling)
+- Use glassmorphism panels for forms
+- Soft glow, depth, and shadows
+- Optimized for both desktop and mobile
+
+SCREEN 1 – EMAIL VERIFICATION (FIRST SCREEN):
+- Full-screen 3D background
+- Centered glass panel
+- Text: “Verify Your Email to Continue”
+- Input field: Email Address
+- Button: “Send OTP”
+- After clicking, show OTP input (6 digits)
+- Button: “Verify OTP”
+- Only after correct OTP, proceed to next screen
+- Show smooth success animation before transition
+
+SCREEN 2 – HOME / INTRO:
+- 3D animated hero background
+- Large title text: “VYOMANG”
+- Subtitle: “Not just a fest. A legacy.”
+- Button: “Buy Ticket”
+- Button triggers smooth 3D transition to ticket screen
+
+SCREEN 3 – TICKET DETAILS:
+- Single highlighted 3D ticket card
+- Ticket Name: “Vyomang Entry Pass”
+- Price: ₹800
+- Includes: Full fest access
+- Button: “Proceed to Registration”
+
+SCREEN 4 – REGISTRATION FORM:
+- Glassmorphism form panel
+- Fields:
+  - Full Name
+  - Registration Number
+  - Email (pre-filled from verification, non-editable)
+  - Phone Number
+- Button: “Proceed to Payment”
+- Clean, trust-focused design
+
+SCREEN 5 – UPI PAYMENT SCREEN:
+- Dark background with subtle motion
+- Display large UPI QR code placeholder
+- Text: “Scan & Pay ₹800”
+- Icons for UPI apps (GPay, PhonePe, Paytm)
+- Button: “I Have Paid”
+- On click, move to transaction screen
+
+SCREEN 6 – TRANSACTION ID CONFIRMATION:
+- Input field: “Enter Transaction ID / UTR Number”
+- Checkbox: “I confirm the payment is completed”
+- Button: “Confirm Payment”
+- Show loading / verification animation
+
+SCREEN 7 – SUCCESS & CONFIRMATION:
+- 3D success animation (checkmark)
+- Text:
+  “Payment Submitted Successfully”
+  “Your registration for VYOMANG is recorded”
+- Message:
+  “A confirmation email with event details has been sent to your email address.”
+- Optional button: “Back to Home”
+
+INTERACTIONS & ANIMATION:
+- No scrolling anywhere
+- All navigation via buttons
+- Smooth easing transitions
+- Slight hover tilt on buttons and cards
+- Subtle sound or visual feedback on clicks
+
+NOTES:
+- Design should feel premium, modern, and event-focused
+- Keep performance optimized (low-poly 3D)
+- Mobile-friendly layout with reduced 3D intensity
