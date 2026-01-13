@@ -1,7 +1,6 @@
 node_modules
 .env
 vyomang-sheets-5cf2ba614021.json
-dist
 .DS_Store
 *.log
 .vscode
