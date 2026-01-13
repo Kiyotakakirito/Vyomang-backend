@@ -67,7 +67,7 @@ export const appendRowToSheet = async (sheetName: string, rowData: any[], isGues
     
     const response = await sheetsClient.spreadsheets.values.append({
       spreadsheetId: spreadsheetId,
-      range: `${sheetName}!A1:I1`, // Updated to include Status and Transaction Number columns (H and I)
+      range: `${sheetName}!A:I`, // Append to the next available row in columns A to I
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [rowData],
@@ -102,7 +102,7 @@ export const emailExistsInSheet = async (sheetName: string, email: string, isGue
     // Get all values from the email column (assuming it's column F - index 5)
     const response = await sheetsClient.spreadsheets.values.get({
       spreadsheetId: spreadsheetId,
-      range: `${sheetName}!F:F`, // Email column
+      range: `${sheetName}!F:F`, // Email column - get all values in the column
     });
     
     const values = response.data.values;
@@ -141,7 +141,7 @@ export const updatePaymentStatus = async (sheetName: string, email: string, tran
     // First, get all the data to find the row with the matching email
     const response = await sheetsClient.spreadsheets.values.get({
       spreadsheetId: spreadsheetId,
-      range: `${sheetName}!A:G`, // Assuming we have up to column G
+      range: `${sheetName}!A:I`, // Get data up to column I to include Status and Transaction Number
     });
     
     const rows = response.data.values;
