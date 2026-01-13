@@ -127,9 +127,19 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
-// Enable CORS for all routes
+// Enable CORS for specific origins in production
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const allowedOrigins = [
+    'https://vyomang.onrender.com', // Production backend URL
+    'https://kiyotakakirito.github.io', // GitHub Pages if used
+    // Add your frontend domain here
+  ];
+  
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
