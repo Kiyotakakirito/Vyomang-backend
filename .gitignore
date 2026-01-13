@@ -1,6 +1,13 @@
 node_modules
+.env
+vyomang-sheets-5cf2ba614021.json
 dist
 .DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz
+*.log
+.vscode
+.idea
+client/
+public/
+*.tsbuildinfo
+coverage/
+*.tgz
