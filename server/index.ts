@@ -196,11 +196,19 @@ app.use((req, res, next) => {
       });
 
       // Send OTP via Brevo API
-      await sendEmail(
-        email,
-        'Your OTP for VYOMANG Registration',
-        `<h2>Your OTP: ${otp}</h2><p>Valid for 5 minutes.</p>`
-      );
+      try {
+        await sendEmail(
+          email,
+          'Your OTP for VYOMANG Registration',
+          `<h2>Your OTP: ${otp}</h2><p>Valid for 5 minutes.</p>`
+        );
+      } catch (error: any) {
+        console.error('Error sending OTP via Brevo:', error.message);
+        if (error.message.includes('401')) {
+          throw new Error('Email service configuration error. Please check Brevo API key.');
+        }
+        throw error;
+      }
 
       // Don't return OTP in response for security
       res.json({ success: true });

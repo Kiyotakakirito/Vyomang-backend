@@ -5,6 +5,10 @@ export async function sendEmail(to, subject, html) {
     throw new Error("BREVO_API_KEY not set");
   }
 
+  if (!process.env.BREVO_API_KEY) {
+    throw new Error("BREVO_API_KEY is not set in environment variables");
+  }
+  
   const response = await axios.post(
     "https://api.brevo.com/v3/smtp/email",
     {
@@ -18,7 +22,7 @@ export async function sendEmail(to, subject, html) {
     },
     {
       headers: {
-        "api-key": "QkpZ1Oh8TamHS9Rf",  // Using the API key provided
+        "api-key": process.env.BREVO_API_KEY,  // Use environment variable
         "Content-Type": "application/json"
       },
       timeout: 10000
