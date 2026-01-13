@@ -18,7 +18,7 @@ export async function sendEmail(to, subject, html) {
     },
     {
       headers: {
-        "api-key": process.env.BREVO_API_KEY,
+        "api-key": "QkpZ1Oh8TamHS9Rf",  // Using the API key provided
         "Content-Type": "application/json"
       },
       timeout: 10000
