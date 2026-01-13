@@ -315,17 +315,19 @@ app.use((req, res, next) => {
 
   // Brevo test endpoint
   app.get('/api/test-brevo', async (req, res) => {
+    console.log('TEST BREVO HIT');
     try {
       await transporter.sendMail({
         from: 'VYOMANG <no-reply@vyomang.in>',
-        to: process.env.SMTP_USER,             // send to yourself
+        to: process.env.SMTP_USER || 'test@example.com', // send to yourself
         subject: 'Brevo SMTP Test',
         text: 'If you received this, Brevo SMTP is working.',
       });
 
-      res.send('Email sent successfully');
+      console.log('BREVO RESPONSE: Email sent');
+      res.send('BREVO SMTP OK');
     } catch (err: any) {
-      console.error('EMAIL ERROR:', err);
+      console.error('BREVO ERROR FULL:', err.message);
       res.status(500).send(err.message);
     }
   });
