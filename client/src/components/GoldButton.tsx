@@ -26,9 +26,9 @@ export function GoldButton({
   const baseStyles = "relative px-8 py-4 rounded-xl font-medium text-base transition-all duration-300 overflow-hidden";
   
   const variants = {
-    primary: "gold-gradient text-black font-semibold hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] active:scale-[0.98]",
-    secondary: "bg-white/5 text-gold border border-gold/30 hover:bg-gold/10 hover:border-gold/50",
-    outline: "bg-transparent text-gold border border-gold/40 hover:bg-gold/5 hover:border-gold/60",
+    primary: "gold-gradient text-black font-semibold hover:shadow-[0_0_30px_rgba(200,200,200,0.5)] active:scale-[0.98]",
+    secondary: "bg-white/5 text-white border border-white/30 hover:bg-white/10 hover:border-white/50",
+    outline: "bg-transparent text-white border border-white/40 hover:bg-white/5 hover:border-white/60",
   };
 
   return (
@@ -37,8 +37,14 @@ export function GoldButton({
       onClick={onClick}
       disabled={disabled || loading}
       data-testid={testId}
-      whileHover={{ scale: disabled ? 1 : 1.02 }}
+      whileHover={{ 
+        scale: disabled ? 1 : 1.02,
+        boxShadow: disabled ? undefined : ['0 0 0px rgba(200, 200, 200, 0)', '0 0 20px rgba(200, 200, 200, 0.4)', '0 0 0px rgba(200, 200, 200, 0)'],
+      }}
       whileTap={{ scale: disabled ? 1 : 0.98 }}
+      transition={{
+        boxShadow: { duration: 0.3 },
+      }}
       className={cn(
         baseStyles,
         variants[variant],
@@ -59,6 +65,15 @@ export function GoldButton({
           className="absolute inset-0 shimmer pointer-events-none"
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
+        />
+      )}
+      
+      {/* Enhanced glow effect for primary buttons */}
+      {variant === 'primary' && !disabled && (
+        <motion.div
+          className="absolute inset-0 rounded-xl bg-white/10 blur-md -z-10"
+          whileHover={{ opacity: 0.8 }}
+          transition={{ duration: 0.3 }}
         />
       )}
     </motion.button>

@@ -5,18 +5,9 @@ import { createServer } from "http";
 import nodemailer from 'nodemailer';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import * as dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
 // Load environment variables from .env file
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const envPath = path.resolve(__dirname, '..', '.env');
-
-// Try to load the .env file with more explicit configuration
 dotenv.config({ 
-  path: envPath,
+  path: '.env',
   override: true,
   debug: true
 });

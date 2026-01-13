@@ -21,8 +21,8 @@ export function GlassPanel({ children, className, withGlow = true }: GlassPanelP
       )}
     >
       <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/10 to-transparent" />
+        {/* Minimal glass effect for clarity */}
+        <div className="absolute inset-0 rounded-2xl border border-white/15 backdrop-blur-xl" />
       </div>
       {children}
     </motion.div>
