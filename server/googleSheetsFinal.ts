@@ -8,14 +8,24 @@ if (process.env.GOOGLE_SERVICE_ACCOUNT) {
   try {
     // Parse the service account JSON from environment variable
     let rawJson = process.env.GOOGLE_SERVICE_ACCOUNT;
-    // Handle escaped newlines in the environment variable
-    if (typeof rawJson === 'string' && rawJson.includes('\\n')) {
-      rawJson = rawJson.replace(/\\n/g, '\n');
+    
+    // Handle various potential escaping issues in environment variables
+    if (typeof rawJson === 'string') {
+      // Replace common problematic patterns
+      rawJson = rawJson.trim(); // Remove leading/trailing whitespace
+      
+      // Handle double-escaped newlines \\n -> \n
+      rawJson = rawJson.replace(/\\\\n/g, '\\n');
+      
+      // Handle escaped quotes
+      rawJson = rawJson.replace(/\\\\\"/g, '\"');
     }
+    
     serviceAccountCredentials = JSON.parse(rawJson);
     console.log('Successfully loaded service account credentials from environment variable');
   } catch (error) {
     console.error('Error parsing service account from environment variable:', error);
+    console.error('Raw GOOGLE_SERVICE_ACCOUNT value (first 200 chars):', process.env.GOOGLE_SERVICE_ACCOUNT?.substring(0, 200));
     console.error('Google Sheets integration will not work without valid credentials');
   }
 } else {
