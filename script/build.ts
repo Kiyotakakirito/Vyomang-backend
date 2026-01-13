@@ -7,7 +7,6 @@ import { readFileSync } from "fs";
 // which helps cold start times
 const allowlist = [
   "@google/generative-ai",
-  "axios",
   "connect-pg-simple",
   "cors",
   "date-fns",

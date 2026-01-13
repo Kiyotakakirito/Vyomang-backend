@@ -2,9 +2,9 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
-import nodemailer from 'nodemailer';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import * as dotenv from 'dotenv';
+import { sendEmail } from './email.js';
 // Load environment variables from .env file
 dotenv.config({ 
   path: '.env',
@@ -49,44 +49,9 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
   }
 }
 
-// Create transporter for email
-let transporter: any;
+// Using Brevo API for email delivery
 
-try {
-  transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: false, // MUST be false for port 587
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-  console.log('Using Brevo SMTP provider');
-} catch (error) {
-  console.error('Failed to create Brevo SMTP transporter:', error);
-  // Fallback transporter that logs emails instead of sending them
-  transporter = {
-    sendMail: async (options: any) => {
-      console.log('Email would be sent:', options);
-      console.warn('Email transporter not configured. Using fallback logger.');
-      return { messageId: 'test-message-id' };
-    },
-    verify: async () => {
-      console.warn('Email transporter not configured. Using fallback logger.');
-      return true;
-    }
-  };
-}
-
-// Verify transporter configuration
-transporter.verify((error: any) => {
-  if (error) {
-    console.error('SMTP Configuration Error:', error);
-  } else {
-    console.log('SMTP Server is ready to send emails');
-  }
-});
+// Using Brevo API for email delivery - no transporter needed
 
 // Validate email function
 const isValidEmail = (email: string): boolean => {
@@ -230,16 +195,12 @@ app.use((req, res, next) => {
         expiresAt,
       });
 
-      // Send OTP via email
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Your OTP for VYOMANG Registration',
-        text: `Your OTP for VYOMANG registration is: ${otp}. It is valid for 5 minutes.`,
-        html: `<p>Your OTP for VYOMANG registration is: <strong>${otp}</strong>. It is valid for 5 minutes.</p>`
-      };
-
-      await transporter.sendMail(mailOptions);
+      // Send OTP via Brevo API
+      await sendEmail(
+        email,
+        'Your OTP for VYOMANG Registration',
+        `<h2>Your OTP: ${otp}</h2><p>Valid for 5 minutes.</p>`
+      );
 
       // Don't return OTP in response for security
       res.json({ success: true });
@@ -297,15 +258,11 @@ app.use((req, res, next) => {
   app.get('/api/test-email', async (req, res) => {
     try {
       // Test email configuration
-      const testMailOptions = {
-        from: process.env.EMAIL_USER,
-        to: process.env.EMAIL_USER, // Send to self for testing
-        subject: 'Test Email Configuration',
-        text: 'This is a test email to verify the SMTP configuration.',
-        html: '<p>This is a test email to verify the SMTP configuration.</p>'
-      };
-
-      await transporter.sendMail(testMailOptions);
+      await sendEmail(
+        process.env.EMAIL_USER || 'test@example.com',
+        'Test Email Configuration',
+        '<p>This is a test email to verify the Brevo API configuration.</p>'
+      );
       res.json({ success: true, message: 'Test email sent successfully' });
     } catch (error: any) {
       console.error('Error sending test email:', error);
@@ -317,15 +274,14 @@ app.use((req, res, next) => {
   app.get('/api/test-brevo', async (req, res) => {
     console.log('TEST BREVO HIT');
     try {
-      await transporter.sendMail({
-        from: 'VYOMANG <no-reply@vyomang.in>',
-        to: process.env.SMTP_USER || 'test@example.com', // send to yourself
-        subject: 'Brevo SMTP Test',
-        text: 'If you received this, Brevo SMTP is working.',
-      });
+      await sendEmail(
+        process.env.SMTP_USER || 'test@example.com',
+        'Brevo API Test',
+        '<p>If you received this, Brevo API is working.</p>'
+      );
 
       console.log('BREVO RESPONSE: Email sent');
-      res.send('BREVO SMTP OK');
+      res.send('BREVO API OK');
     } catch (err: any) {
       console.error('BREVO ERROR FULL:', err.message);
       res.status(500).send(err.message);
