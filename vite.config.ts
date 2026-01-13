@@ -3,11 +3,6 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import { metaImagesPlugin } from "./vite-plugin-meta-images";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 export default defineConfig({
   plugins: [
@@ -17,9 +12,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "client", "src"),
-      "@shared": path.resolve(__dirname, "shared"),
-      "@assets": path.resolve(__dirname, "attached_assets"),
+      "@": path.resolve("client", "src"),
+      "@shared": path.resolve("shared"),
+      "@assets": path.resolve("attached_assets"),
     },
   },
   css: {
@@ -27,9 +22,9 @@ export default defineConfig({
       plugins: [],
     },
   },
-  root: path.resolve(__dirname, "client"),
+  root: path.resolve("client"),
   build: {
-    outDir: path.resolve(__dirname, "dist/public"),
+    outDir: path.resolve("dist", "public"),
     emptyOutDir: true,
   },
   server: {
