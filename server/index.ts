@@ -50,21 +50,48 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
 }
 
 // Create transporter for email
-let transporter;
-try {
-  transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS, // Use App Password
-    },
-  });
-} catch (error) {
-  console.error('Failed to create email transporter:', error);
+let transporter: any;
+
+// Check for alternative email providers first (better for cloud environments)
+if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+  // Use custom SMTP provider (like SendGrid, AWS SES, etc.)
+  try {
+    transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+    console.log('Using custom SMTP provider');
+  } catch (error) {
+    console.error('Failed to create custom SMTP transporter:', error);
+    transporter = transporterFallback();
+  }
+} else {
+  // Fallback to Gmail (may not work in cloud environments like Render)
+  try {
+    transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS, // Use App Password
+      },
+    });
+    console.log('Using Gmail SMTP');
+  } catch (error) {
+    console.error('Failed to create email transporter:', error);
+    transporter = transporterFallback();
+  }
+}
+
+function transporterFallback() {
   // Fallback transporter that logs emails instead of sending them
-  transporter = {
+  return {
     sendMail: async (options: any) => {
       console.log('Email would be sent:', options);
       console.warn('Email transporter not configured. Using fallback logger.');
@@ -78,7 +105,7 @@ try {
 }
 
 // Verify transporter configuration
-transporter.verify((error) => {
+transporter.verify((error: any) => {
   if (error) {
     console.error('SMTP Configuration Error:', error);
   } else {
