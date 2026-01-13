@@ -52,46 +52,21 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
 // Create transporter for email
 let transporter: any;
 
-// Check for alternative email providers first (better for cloud environments)
-if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-  // Use custom SMTP provider (like SendGrid, AWS SES, etc.)
-  try {
-    transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-    console.log('Using custom SMTP provider');
-  } catch (error) {
-    console.error('Failed to create custom SMTP transporter:', error);
-    transporter = transporterFallback();
-  }
-} else {
-  // Fallback to Gmail (may not work in cloud environments like Render)
-  try {
-    transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Use App Password
-      },
-    });
-    console.log('Using Gmail SMTP');
-  } catch (error) {
-    console.error('Failed to create email transporter:', error);
-    transporter = transporterFallback();
-  }
-}
-
-function transporterFallback() {
+try {
+  transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: false, // MUST be false for port 587
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+  console.log('Using Brevo SMTP provider');
+} catch (error) {
+  console.error('Failed to create Brevo SMTP transporter:', error);
   // Fallback transporter that logs emails instead of sending them
-  return {
+  transporter = {
     sendMail: async (options: any) => {
       console.log('Email would be sent:', options);
       console.warn('Email transporter not configured. Using fallback logger.');
@@ -335,6 +310,23 @@ app.use((req, res, next) => {
     } catch (error: any) {
       console.error('Error sending test email:', error);
       res.status(500).json({ success: false, message: 'Failed to send test email', error: error.message });
+    }
+  });
+
+  // Brevo test endpoint
+  app.get('/api/test-brevo', async (req, res) => {
+    try {
+      await transporter.sendMail({
+        from: 'VYOMANG <no-reply@vyomang.in>',
+        to: process.env.SMTP_USER,             // send to yourself
+        subject: 'Brevo SMTP Test',
+        text: 'If you received this, Brevo SMTP is working.',
+      });
+
+      res.send('Email sent successfully');
+    } catch (err: any) {
+      console.error('EMAIL ERROR:', err);
+      res.status(500).send(err.message);
     }
   });
 
